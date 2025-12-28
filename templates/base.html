@@ -53,12 +53,14 @@
 		<!-- Preloader -->
 		{% include 'includes/preloader.html' %}
 
-		<main class="x-hidden page-content">
-			<!-- Header Area -->
+		<!-- Main Content Wrapper -->
+		<main class="page-content">
+			<!-- Header Area - INSIDE page-content -->
 			{% include 'includes/header.html' %}
 
-			<!-- Main Content - Each page fills this -->
+			<!-- Main Content -->
 			{% block content %}{% endblock %}
+
 			<!-- Footer -->
 			{% include 'includes/footer.html' %}
 		</main>

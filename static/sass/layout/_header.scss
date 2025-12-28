@@ -1,19 +1,22 @@
-/* ------------------------------------------------------------- *
- * Header CSS Start
-/* ------------------------------------------------------------- */
-
-//  Navigation
 .main-menu {
 	width: 100%;
-	z-index: 9999;
+	z-index: 1020;
 	display: grid;
 	background-color: $white;
 	align-content: center;
 	padding: clamp(16px, 1.25vw, 30px);
 	border-radius: 0 0 clamp(16px, 1.25vw, 30px) clamp(16px, 1.25vw, 30px);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+	transition: box-shadow 0.3s ease;
+
 	@include media-query(1199px) {
 		padding: clamp(12px, 1.25vw, 30px) clamp(16px, 1.25vw, 30px);
 	}
+
+	&.scrolled {
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	}
+
 	.main-menu__block {
 		position: relative;
 		display: flex;
@@ -21,54 +24,63 @@
 		justify-content: space-between;
 		gap: 24px;
 	}
+
 	.main-menu__logo {
 		.logo {
 			text-align: center;
 			max-width: 64px;
+
 			@include media-query(492px) {
 				max-width: 58px;
 			}
 		}
 	}
+
 	.location-block {
 		display: flex;
 		align-items: center;
+		gap: 8px;
+
 		svg {
 			width: clamp(20px, 1.25vw, 30px);
 			height: clamp(20px, 1.25vw, 30px);
 		}
 	}
+
 	.search-field {
 		width: 35.417vw;
 	}
+
 	.main-menu__right {
 		display: flex;
 		align-items: center;
 		gap: clamp(16px, 1.25vw, 48px);
+
 		.icon-btn {
 			display: flex;
 			font-size: clamp(16px, 1.25vw, 24px);
 			align-items: center;
 			justify-content: center;
 			transition: $transition;
+			min-width: 44px;
+			min-height: 44px;
+
 			svg {
 				width: 24px;
 				height: 24px;
+
 				path {
 					fill: $black;
 					transition: $transition;
 				}
 			}
-			&:hover {
-				svg {
-					path {
-						fill: $accent;
-						transition: $transition;
-					}
-				}
+
+			&:hover svg path {
+				fill: $accent;
 			}
 		}
 	}
+
 	.main-menu__nav {
 		display: none;
 	}
@@ -80,16 +92,23 @@
 	color: $black;
 	cursor: pointer;
 	transition: $transition;
+	min-width: 44px;
+	min-height: 44px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
 	@include media-query-min(1200px) {
 		display: none;
 	}
+
 	&:hover {
 		color: $accent;
 	}
 }
 
 /*--------------------------------------------------------------
-# Sidebar Nav
+# Sidebar Nav - BOOTSTRAP Z-INDEX
 --------------------------------------------------------------*/
 .sidebar-nav__wrapper {
 	position: fixed;
@@ -97,21 +116,19 @@
 	left: 0;
 	width: clamp(130px, 7.917vw, 200px);
 	height: 100vh;
-	z-index: 999;
+	z-index: 1040; // Bootstrap modal z-index
 	transform-origin: left center;
-
-	// Desktop: visible by default
 	visibility: visible;
 	opacity: 1;
 	transform: translateX(0%);
 	transition: transform 500ms ease, visibility 500ms ease, opacity 500ms ease;
 
-	// Mobile: hidden by default
 	@include media-query(1199px) {
 		width: 100%;
 		visibility: hidden;
 		opacity: 0;
 		transform: translateX(-100%);
+		z-index: 1050; // Above header on mobile
 	}
 
 	.container {
@@ -130,12 +147,13 @@
 		visibility: hidden;
 		cursor: pointer;
 		transition: opacity 300ms ease, visibility 300ms ease;
+		z-index: 1;
 	}
 
 	.sidebar-nav__content {
 		width: clamp(130px, 7.917vw, 200px);
 		background-color: $white;
-		z-index: 10;
+		z-index: 2;
 		position: relative;
 		height: 100%;
 		overflow-y: auto;
@@ -198,6 +216,7 @@
 					svg {
 						width: clamp(18px, 1.25vw, 32px);
 						height: clamp(18px, 1.25vw, 32px);
+
 						path {
 							transition: $transition;
 							fill: $dark-gray;
@@ -225,10 +244,9 @@
 					&:hover,
 					&.active {
 						color: $accent;
-						svg {
-							path {
-								fill: $accent;
-							}
+
+						svg path {
+							fill: $accent;
 						}
 					}
 				}
@@ -290,7 +308,6 @@
 		display: none;
 	}
 
-	// EXPANDED STATE - JS adds .expanded to .sidebar-nav__wrapper
 	&.expanded {
 		visibility: visible;
 		opacity: 1;
@@ -309,7 +326,6 @@
 	}
 }
 
-// Body lock when menu is open
 body.locked {
 	overflow: hidden;
 }

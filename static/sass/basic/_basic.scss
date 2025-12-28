@@ -53,13 +53,16 @@ ol.list-style li::marker {
 .page-content {
 	margin-left: clamp(130px, 7.917vw, 200px);
 	padding: 0 clamp(16px, 2.35vw, 90px);
+
 	@media (max-width: 1199px) {
 		margin-left: 0;
 	}
+
 	@media (max-width: 492px) {
 		padding: 0 12px;
 	}
 }
+
 .x-hidden {
 	overflow-x: hidden !important;
 }
