@@ -4,7 +4,7 @@
 class RealTimeWeatherCard {
 	constructor(config = {}) {
 		this.config = {
-			stationId: config.stationId || "St1",
+			stationId: config.stationId || "St4",
 			apiEndpoint: config.apiEndpoint || "/api/weather-data",
 			refreshInterval: config.refreshInterval || 60000,
 			enableAutoRefresh: config.enableAutoRefresh !== false,
@@ -135,7 +135,7 @@ class RealTimeWeatherCard {
 	findMDRRMOStationData(dataArray) {
 		if (!Array.isArray(dataArray) || dataArray.length === 0) return null;
 
-		const mdrrmoStationIds = ["St1"];
+		const mdrrmoStationIds = ["St4"];
 		const mdrrmoReadings = dataArray.filter((r) =>
 			mdrrmoStationIds.includes(r.StationID)
 		);
@@ -464,7 +464,7 @@ class RealTimeWeatherCard {
 
 document.addEventListener("DOMContentLoaded", function () {
 	window.weatherCard = new RealTimeWeatherCard({
-		stationId: "St1",
+		stationId: "St4",
 		refreshInterval: 60000,
 		enableAutoRefresh: true,
 	});

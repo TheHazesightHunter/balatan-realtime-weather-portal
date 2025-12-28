@@ -228,9 +228,9 @@
 						<span class="weather-card__latest-reading">
 							{% if latest and (latest.get('DateTime') or
 							latest.get('DateTimeStamp')) %} {% set data_time =
-							latest.get('DateTime') or latest.get('DateTimeStamp') %} Updated
-							Data: {{ data_time | format_time }} {% else %} No sensor data {%
-							endif %}
+							latest.get('DateTime') or latest.get('DateTimeStamp') %} Last
+							Update : {{ data_time | format_time }} {% else %} No sensor data
+							{% endif %}
 						</span>
 					</div>
 				</div>

@@ -1611,22 +1611,24 @@ strong {
   -webkit-transition-delay: 0.7s;
 }
 
-/* ------------------------------------------------------------- *
- * Header CSS Start
-/* ------------------------------------------------------------- */
 .main-menu {
   width: 100%;
-  z-index: 9999;
+  z-index: 1020;
   display: grid;
   background-color: var(--color-white);
   align-content: center;
   padding: clamp(16px, 1.25vw, 30px);
   border-radius: 0 0 clamp(16px, 1.25vw, 30px) clamp(16px, 1.25vw, 30px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease;
 }
 @media (max-width: 1199px) {
   .main-menu {
     padding: clamp(12px, 1.25vw, 30px) clamp(16px, 1.25vw, 30px);
   }
+}
+.main-menu.scrolled {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 .main-menu .main-menu__block {
   position: relative;
@@ -1647,6 +1649,7 @@ strong {
 .main-menu .location-block {
   display: flex;
   align-items: center;
+  gap: 8px;
 }
 .main-menu .location-block svg {
   width: clamp(20px, 1.25vw, 30px);
@@ -1666,6 +1669,8 @@ strong {
   align-items: center;
   justify-content: center;
   transition: all 0.5s ease-in;
+  min-width: 44px;
+  min-height: 44px;
 }
 .main-menu .main-menu__right .icon-btn svg {
   width: 24px;
@@ -1677,7 +1682,6 @@ strong {
 }
 .main-menu .main-menu__right .icon-btn:hover svg path {
   fill: var(--color-primary);
-  transition: all 0.5s ease-in;
 }
 .main-menu .main-menu__nav {
   display: none;
@@ -1689,6 +1693,11 @@ strong {
   color: var(--color-black);
   cursor: pointer;
   transition: all 0.5s ease-in;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 @media screen and (min-width: 1200px) {
   .sidebar-nav__toggler {
@@ -1700,7 +1709,7 @@ strong {
 }
 
 /*--------------------------------------------------------------
-# Sidebar Nav
+# Sidebar Nav - BOOTSTRAP Z-INDEX
 --------------------------------------------------------------*/
 .sidebar-nav__wrapper {
   position: fixed;
@@ -1708,7 +1717,7 @@ strong {
   left: 0;
   width: clamp(130px, 7.917vw, 200px);
   height: 100vh;
-  z-index: 999;
+  z-index: 1040;
   transform-origin: left center;
   visibility: visible;
   opacity: 1;
@@ -1721,6 +1730,7 @@ strong {
     visibility: hidden;
     opacity: 0;
     transform: translateX(-100%);
+    z-index: 1050;
   }
 }
 .sidebar-nav__wrapper .container {
@@ -1738,11 +1748,12 @@ strong {
   visibility: hidden;
   cursor: pointer;
   transition: opacity 300ms ease, visibility 300ms ease;
+  z-index: 1;
 }
 .sidebar-nav__wrapper .sidebar-nav__content {
   width: clamp(130px, 7.917vw, 200px);
   background-color: var(--color-white);
-  z-index: 10;
+  z-index: 2;
   position: relative;
   height: 100%;
   overflow-y: auto;

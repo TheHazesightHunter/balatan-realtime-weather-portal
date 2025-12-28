@@ -14,7 +14,7 @@ def home():
     weather_data = current_app.weather_service.fetch_weather_data()
     stations = current_app.weather_service.get_latest_per_station(weather_data)
     
-    latest = stations.get('St1')
+    latest = stations.get('St4')
     
     if not latest:
         latest = current_app.weather_service.get_mdrrmo_latest_reading(weather_data)

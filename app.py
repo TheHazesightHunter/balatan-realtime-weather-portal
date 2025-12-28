@@ -66,7 +66,7 @@ def create_app(config_name='development'):
 
     flask_app.register_blueprint(web_bp)
     flask_app.register_blueprint(api_bp, url_prefix='/api')
-
+    
     register_error_handlers(flask_app)
 
     return flask_app
