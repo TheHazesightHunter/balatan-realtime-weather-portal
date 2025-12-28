@@ -1,0 +1,17 @@
+.newsletter-block {
+    background-color: $white;
+    border-radius: 16px;
+    .text-block {
+        text-align: center;
+    }
+    .img-block{
+        text-align: end;
+        @include media-query(992px) {
+            text-align: center;
+        }
+    }
+}
+
+.footer {
+    text-align: center;
+}

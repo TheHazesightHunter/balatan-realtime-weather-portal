@@ -1,0 +1,1236 @@
+$accent: #409ac7;
+$black: #000;
+$transition: all 0.2s ease;
+// $font-primary: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+$font-primary: "Poppins", sans-serif;
+$font-awesome: "Font Awesome 6 Pro";
+
+.water-alert-banner,
+.chart-alert-banner {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 12px 20px;
+	border-radius: 8px;
+	margin-bottom: 16px;
+	border-left: 4px solid;
+	animation: alertPulse 2s ease-in-out infinite;
+
+	&.hidden {
+		display: none !important;
+	}
+
+	&--advisory {
+		background: #eff6ff;
+		border-color: #3b82f6;
+		color: #1e40af;
+	}
+
+	&--alert {
+		background: #fefce8;
+		border-color: #eab308;
+		color: #854d0e;
+	}
+
+	&--warning {
+		background: #fff7ed;
+		border-color: #f97316;
+		color: #9a3412;
+	}
+
+	&--critical {
+		background: #fef2f2;
+		border-color: #dc2626;
+		color: #991b1b;
+		animation: criticalPulse 1s ease-in-out infinite;
+	}
+
+	&__message {
+		font-size: 14px;
+		font-weight: 600;
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+}
+
+@keyframes alertPulse {
+	0%,
+	100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.85;
+	}
+}
+
+@keyframes criticalPulse {
+	0%,
+	100% {
+		opacity: 1;
+		transform: scale(1);
+	}
+	50% {
+		opacity: 0.9;
+		transform: scale(1.02);
+	}
+}
+
+/* =============================================================================
+   SECTION CONTAINERS
+   ============================================================================= */
+
+.precipitation-section,
+.water-level-section {
+	margin-bottom: 2rem;
+}
+
+/* =============================================================================
+   CHART TITLES (Dynamic - supports both chart types)
+   ============================================================================= */
+
+.chart-title,
+.water-level-title,
+.precipitation-title {
+	font-size: 20px;
+	font-weight: 600;
+	color: $dark-gray;
+	margin: 0;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.chart-title__icon,
+.water-level-title__icon,
+.precipitation-title__icon {
+	color: $accent;
+	font-size: 20px;
+	margin-right: 0; // Flex gap handles spacing
+}
+
+/* =============================================================================
+   MAIN CHART CONTAINER - FULL WIDTH & RESPONSIVE
+   ============================================================================= */
+
+.chart-container {
+	position: relative;
+	margin-bottom: 16px;
+	// Allow arrows to extend outside container
+}
+
+.chart-wrapper {
+	position: relative;
+	background: $white;
+	border-radius: 12px;
+	padding: 16px 24px 42px 24px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+	overflow: visible; // CRITICAL: arrows need this to be clickable
+}
+
+/* =============================================================================
+   CHART HEADER (Title + Controls)
+   ============================================================================= */
+
+.chart-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 12px;
+	margin-bottom: 36px;
+}
+
+.chart-controls {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+/* =============================================================================
+   CHART CANVAS - PROPER SIZING & RESPONSIVE HEIGHTS
+   ============================================================================= */
+
+.chart-canvas {
+	width: 100%;
+	position: relative;
+	transition: opacity 0.2s ease;
+
+	// Default height for desktop
+	min-height: 400px;
+
+	&.sliding {
+		opacity: 0.7;
+	}
+}
+
+/* Responsive chart heights */
+@media (max-width: 480px) {
+	.chart-canvas {
+		min-height: 220px !important;
+	}
+}
+
+@media (min-width: 481px) and (max-width: 767px) {
+	.chart-canvas {
+		min-height: 250px !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+	.chart-canvas {
+		min-height: 320px !important;
+	}
+}
+
+@media (min-width: 1024px) {
+	.chart-canvas {
+		min-height: 400px !important;
+	}
+}
+
+/* Mobile touch feedback */
+@media (max-width: 767px) {
+	.chart-canvas {
+		touch-action: pan-x;
+		cursor: grab;
+
+		&:active {
+			cursor: grabbing;
+		}
+	}
+}
+
+/* =============================================================================
+   NAVIGATION ARROWS - ENHANCED RESPONSIVE BEHAVIOR
+   ============================================================================= */
+
+.chart-nav-arrow {
+	// === POSITIONING ===
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	z-index: 20;
+
+	// === SIZE (Desktop) ===
+	width: 40px;
+	height: 40px;
+
+	// === APPEARANCE ===
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba($accent, 0.9);
+	color: $white;
+	border: none;
+	border-radius: 50%;
+	cursor: pointer;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+	transition: $transition;
+	pointer-events: auto;
+
+	// === ICON ===
+	i {
+		font-size: 14px;
+	}
+
+	// === HOVER ===
+	&:hover:not(:disabled) {
+		background: $accent;
+		transform: translateY(-50%) scale(1.1);
+		box-shadow: 0 4px 12px rgba($accent, 0.4);
+	}
+
+	// === ACTIVE ===
+	&:active:not(:disabled) {
+		transform: translateY(-50%) scale(0.95);
+	}
+
+	// === FOCUS ===
+	&:focus {
+		outline: none;
+		box-shadow: 0 0 0 3px rgba($accent, 0.3);
+	}
+
+	// === DISABLED (ALWAYS VISIBLE!) ===
+	&:disabled {
+		opacity: 0.4;
+		background: rgba(148, 163, 184, 0.5);
+		cursor: not-allowed;
+		box-shadow: none;
+
+		&:hover {
+			transform: translateY(-50%);
+		}
+	}
+
+	// === POSITIONING ===
+	&--left {
+		left: -16px;
+	}
+
+	&--right {
+		right: -16px;
+	}
+}
+
+/* Arrow fade-in animation */
+.chart-nav-arrow[style*="display: flex"] {
+	animation: arrowFadeIn 0.3s ease;
+}
+
+@keyframes arrowFadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(-50%) scale(0.8);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(-50%) scale(1);
+	}
+}
+
+/* =============================================================================
+   DATE PICKER - RESPONSIVE & ACCESSIBLE
+   ============================================================================= */
+
+.date-picker-inline {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 13px;
+	color: #64748b;
+
+	i {
+		color: $accent;
+		font-size: 14px;
+	}
+
+	.date-picker-label,
+	span:not(.sr-only) {
+		font-size: 13px;
+		color: #64748b;
+		white-space: nowrap;
+	}
+}
+
+.date-picker-inline__input {
+	padding: 8px 12px;
+	height: 36px;
+	border: 1px solid #e2e8f0;
+	border-radius: 6px;
+	font-size: 13px;
+	color: #1a202c;
+	background: $white;
+	cursor: pointer;
+	transition: $transition;
+	min-width: 140px;
+
+	&:hover {
+		border-color: $accent;
+	}
+
+	&:focus {
+		outline: none;
+		border-color: $accent;
+		box-shadow: 0 0 0 3px rgba($accent, 0.15);
+	}
+
+	&.loading,
+	&:disabled {
+		opacity: 0.6;
+		cursor: wait;
+		background: #f8fafc;
+	}
+}
+
+/* =============================================================================
+   EXPORT BUTTON - WITH MOBILE TOOLTIP
+   ============================================================================= */
+
+.export-btn-inline {
+	position: relative; // For tooltip positioning
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 8px 12px;
+	height: 36px;
+	background: $white;
+	color: $dark-gray;
+	border: 1px solid $accent;
+	border-radius: 6px;
+	font-size: 13px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: $transition;
+	white-space: nowrap;
+
+	&:hover {
+		background: $accent;
+		transform: translateY(-1px);
+		color: $white;
+		box-shadow: 0 4px 12px rgba($accent, 0.3);
+	}
+
+	&:active {
+		transform: translateY(0);
+	}
+
+	&:disabled {
+		background: #9ca3af;
+		cursor: not-allowed;
+		transform: none;
+		box-shadow: none;
+	}
+
+	i {
+		font-size: 12px;
+	}
+
+	.export-btn-text {
+		font-size: inherit;
+	}
+}
+
+/* =============================================================================
+   LOADING STATE - ELEGANT & ACCESSIBLE
+   ============================================================================= */
+
+.chart-loading {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	background: rgba($white, 0.95);
+	border-radius: 12px;
+	z-index: 10;
+
+	&.hidden {
+		display: none !important;
+	}
+
+	&__spinner {
+		width: 36px;
+		height: 36px;
+		border: 3px solid #e2e8f0;
+		border-top-color: $accent;
+		border-radius: 50%;
+		animation: spin 0.8s linear infinite;
+	}
+
+	&__text {
+		margin-top: 12px;
+		color: #64748b;
+		font-size: 14px;
+	}
+}
+
+@keyframes spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+/* =============================================================================
+   ERROR STATE - USER-FRIENDLY & ACTIONABLE
+   ============================================================================= */
+
+.chart-error {
+	display: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	background: rgba($white, 0.95);
+	padding: 24px;
+	text-align: center;
+	border-radius: 12px;
+	z-index: 15;
+
+	&.show {
+		display: flex !important;
+	}
+
+	&__icon {
+		font-size: 40px;
+		color: #f59e0b;
+		margin-bottom: 12px;
+	}
+
+	&__title {
+		font-size: 16px;
+		font-weight: 600;
+		color: #1a202c;
+		margin-bottom: 8px;
+	}
+
+	&__message {
+		color: #64748b;
+		font-size: 13px;
+		margin-bottom: 16px;
+		max-width: 300px;
+	}
+
+	&__btn {
+		padding: 8px 16px;
+		background: $accent;
+		color: $white;
+		border: none;
+		border-radius: 6px;
+		font-size: 13px;
+		font-weight: 500;
+		cursor: pointer;
+		transition: $transition;
+
+		&:hover {
+			// background: darken($accent, 10%);
+		}
+
+		i {
+			margin-right: 6px;
+		}
+	}
+}
+
+/* =============================================================================
+   TOOLTIPS - ENHANCED FOR BOTH CHART TYPES
+   ============================================================================= */
+
+// Water Level Tooltips
+.water-tooltip {
+	width: 280px;
+	font-family: $font-primary;
+	background: $white;
+	border-radius: 12px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	overflow: hidden;
+	border: 2px solid $accent;
+
+	&__header {
+		padding: 12px 16px;
+		background: $accent;
+		color: $white;
+		font-size: 14px;
+		font-weight: 700;
+		text-align: left;
+	}
+
+	&__warning {
+		padding: 10px 16px;
+		background: #fef3c7;
+		border-left: 4px solid #f59e0b;
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		font-size: 12px;
+		font-weight: 600;
+		color: #92400e;
+
+		i {
+			color: #f59e0b;
+			font-size: 14px;
+			flex-shrink: 0;
+		}
+	}
+
+	&__alert {
+		padding: 8px 16px;
+		font-size: 11px;
+		font-weight: 700;
+		text-align: center;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 6px;
+
+		&--advisory {
+			background: #eff6ff;
+			color: #1e40af;
+		}
+		&--alert {
+			background: #fefce8;
+			color: #854d0e;
+		}
+		&--warning {
+			background: #fff7ed;
+			color: #9a3412;
+		}
+		&--critical {
+			background: #fef2f2;
+			color: #991b1b;
+		}
+	}
+
+	&__body {
+		padding: 14px 16px;
+		background: $white;
+	}
+
+	&__station {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 6px 0;
+
+		&:first-child {
+			padding-top: 0;
+		}
+		&:last-child {
+			padding-bottom: 0;
+		}
+	}
+
+	&__station-left {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	&__dot {
+		width: 10px;
+		height: 10px;
+		border-radius: 50%;
+		flex-shrink: 0;
+	}
+
+	&__station-name {
+		font-size: 13px;
+		font-weight: 500;
+		color: #1e293b;
+	}
+
+	&__value {
+		font-size: 13px;
+		font-weight: 700;
+		white-space: nowrap;
+	}
+}
+
+// Precipitation Tooltips (separate styling from water tooltips)
+.prec-tooltip {
+	width: 320px;
+	font-family: $font-primary;
+	background: $white;
+	border-radius: 12px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	overflow: hidden;
+	border: 2px solid $accent;
+
+	// === HEADER ===
+	&__header {
+		padding: 12px 16px;
+		background: $accent;
+		color: $white;
+		font-size: 14px;
+		font-weight: 700;
+		text-align: left;
+	}
+
+	// === WARNING BANNER (Yellow - for duplicate values) ===
+	&__warning {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 10px 16px;
+		background: #fef3c7;
+		border-left: 4px solid #f59e0b;
+		font-size: 12px;
+		font-weight: 600;
+		color: #92400e;
+
+		i {
+			font-size: 14px;
+			color: #f59e0b;
+			flex-shrink: 0;
+		}
+	}
+
+	// === BODY ===
+	&__body {
+		padding: 14px 16px;
+		background: $white;
+	}
+
+	// === STATION ROW ===
+	&__station {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 6px 0;
+
+		&:first-child {
+			padding-top: 0;
+		}
+
+		&:last-child {
+			padding-bottom: 0;
+		}
+	}
+
+	&__station-left {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	// === DOT ===
+	&__dot {
+		width: 10px;
+		height: 10px;
+		border-radius: 50%;
+		flex-shrink: 0;
+	}
+
+	// === STATION NAME ===
+	&__station-name {
+		font-size: 13px;
+		font-weight: 500;
+		color: #1e293b;
+	}
+
+	// === RAINFALL VALUE ===
+	&__value {
+		font-size: 13px;
+		font-weight: 700;
+		white-space: nowrap;
+	}
+}
+
+/* =============================================================================
+   ACCESSIBILITY
+   ============================================================================= */
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border-width: 0;
+}
+
+/* =============================================================================
+   RESPONSIVE - TABLET (768px - 1023px)
+   ============================================================================= */
+
+@media (max-width: 1023px) and (min-width: 768px) {
+	.chart-title,
+	.water-level-title,
+	.precipitation-title {
+		font-size: 19px;
+	}
+
+	.chart-title__icon,
+	.water-level-title__icon,
+	.precipitation-title__icon {
+		font-size: 19px;
+	}
+
+	.date-picker-inline {
+		font-size: 12px;
+		gap: 6px;
+
+		i {
+			font-size: 13px;
+		}
+		.date-picker-label,
+		span:not(.sr-only) {
+			font-size: 12px;
+		}
+	}
+
+	.date-picker-inline__input {
+		padding: 7px 10px;
+		height: 34px;
+		font-size: 12px;
+		min-width: 130px;
+	}
+
+	.export-btn-inline {
+		padding: 7px 10px;
+		height: 34px;
+		font-size: 12px;
+
+		i {
+			font-size: 12px;
+		}
+	}
+
+	.chart-controls {
+		gap: 10px;
+	}
+
+	.chart-nav-arrow {
+		width: 36px;
+		height: 36px;
+
+		i {
+			font-size: 13px;
+		}
+	}
+}
+
+/* =============================================================================
+   RESPONSIVE - MOBILE (< 768px)
+   ============================================================================= */
+
+@media (max-width: 767px) {
+	.chart-title,
+	.water-level-title,
+	.precipitation-title {
+		font-size: 18px;
+	}
+
+	.chart-header {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 12px;
+		margin-bottom: 16px;
+	}
+
+	.chart-controls {
+		width: 100%;
+		justify-content: space-between;
+		gap: 8px;
+	}
+
+	.date-picker-inline {
+		font-size: 11px;
+		gap: 4px;
+
+		i {
+			font-size: 11px;
+		}
+		.date-picker-label,
+		span:not(.sr-only) {
+			font-size: 11px;
+		}
+	}
+
+	.date-picker-inline__input {
+		padding: 6px 8px;
+		height: 32px;
+		font-size: 12px;
+		min-width: 110px;
+	}
+
+	.export-btn-inline {
+		padding: 6px 8px;
+		height: 32px;
+		font-size: 12px;
+
+		i {
+			font-size: 11px;
+		}
+
+		// Mobile tooltip (optional enhancement)
+		@media (max-width: 480px) {
+			.export-btn-text {
+				display: none;
+			}
+
+			// Tooltip on hover for icon-only button
+			&::after {
+				content: "Export CSV";
+				position: absolute;
+				bottom: calc(100% + 8px);
+				left: 50%;
+				transform: translateX(-50%);
+				padding: 6px 10px;
+				background: rgba(0, 0, 0, 0.85);
+				color: $white;
+				font-size: 11px;
+				font-weight: 500;
+				border-radius: 6px;
+				white-space: nowrap;
+				opacity: 0;
+				visibility: hidden;
+				transition: opacity 0.2s ease, visibility 0.2s ease;
+				pointer-events: none;
+				z-index: 100;
+			}
+
+			&:hover::after {
+				opacity: 1;
+				visibility: visible;
+			}
+
+			&:disabled::after {
+				display: none;
+			}
+		}
+	}
+
+	.chart-nav-arrow {
+		width: 32px;
+		height: 32px;
+
+		i {
+			font-size: 12px;
+		}
+
+		&--left {
+			left: 8px;
+		}
+		&--right {
+			right: 8px;
+		}
+
+		// Better touch targets
+		&::before {
+			content: "";
+			position: absolute;
+			top: -8px;
+			left: -8px;
+			right: -8px;
+			bottom: -8px;
+			border-radius: 50%;
+		}
+	}
+
+	// Mobile tooltips - smaller and cleaner
+	.water-tooltip {
+		width: 200px !important;
+
+		&__header {
+			padding: 6px 10px;
+			font-size: 10px;
+			font-weight: 600;
+		}
+
+		&__warning {
+			padding: 5px 8px;
+			font-size: 9px;
+			gap: 4px;
+
+			i {
+				font-size: 10px;
+			}
+		}
+
+		&__body {
+			padding: 8px 10px;
+		}
+
+		&__station {
+			padding: 3px 0;
+
+			&-left {
+				gap: 4px;
+			}
+			&-name {
+				font-size: 9px;
+				font-weight: 500;
+			}
+		}
+
+		&__dot {
+			width: 6px;
+			height: 6px;
+		}
+
+		&__value {
+			font-size: 9px;
+			font-weight: 600;
+		}
+	}
+
+	// Precipitation mobile tooltips (smaller on mobile)
+	.prec-tooltip {
+		width: 200px !important;
+
+		&__header {
+			padding: 6px 10px;
+			font-size: 10px;
+			font-weight: 600;
+		}
+
+		&__warning {
+			padding: 5px 8px;
+			font-size: 9px;
+			gap: 4px;
+
+			i {
+				font-size: 10px;
+			}
+		}
+
+		&__body {
+			padding: 8px 10px;
+		}
+
+		&__station {
+			padding: 3px 0;
+		}
+
+		&__station-left {
+			gap: 4px;
+		}
+
+		&__dot {
+			width: 6px;
+			height: 6px;
+		}
+
+		&__station-name {
+			font-size: 9px;
+			font-weight: 500;
+		}
+
+		&__value {
+			font-size: 9px;
+			font-weight: 600;
+		}
+	}
+}
+
+/* =============================================================================
+   RESPONSIVE - EXTRA SMALL (< 480px)
+   ============================================================================= */
+
+@media (max-width: 480px) {
+	.chart-title,
+	.water-level-title,
+	.precipitation-title {
+		font-size: 16px;
+	}
+
+	.chart-title__icon,
+	.water-level-title__icon,
+	.precipitation-title__icon {
+		font-size: 1px;
+	}
+
+	.date-picker-inline {
+		font-size: 10px;
+		gap: 3px;
+
+		i {
+			font-size: 10px;
+		}
+		.date-picker-label,
+		span:not(.sr-only) {
+			font-size: 10px;
+		}
+	}
+
+	.date-picker-inline__input {
+		padding: 4px 6px;
+		height: 28px;
+		font-size: 11px;
+		min-width: 100px;
+	}
+
+	.export-btn-inline {
+		padding: 4px 6px;
+		height: 28px;
+		font-size: 11px;
+
+		i {
+			font-size: 10px;
+		}
+	}
+
+	.chart-controls {
+		gap: 6px;
+	}
+
+	.chart-nav-arrow {
+		width: 28px;
+		height: 28px;
+
+		i {
+			font-size: 10px;
+		}
+
+		&--left {
+			left: 4px;
+		}
+		&--right {
+			right: 4px;
+		}
+	}
+
+	// Extra small tooltips
+	.water-tooltip {
+		width: 180px !important;
+
+		&__header {
+			padding: 5px 8px;
+			font-size: 9px;
+		}
+
+		&__warning {
+			padding: 4px 6px;
+			font-size: 8px;
+
+			i {
+				font-size: 9px;
+			}
+		}
+
+		&__body {
+			padding: 6px 8px;
+		}
+
+		&__station {
+			padding: 2px 0;
+
+			&-left {
+				gap: 3px;
+			}
+			&-name {
+				font-size: 8px;
+			}
+		}
+
+		&__dot {
+			width: 5px;
+			height: 5px;
+		}
+
+		&__value {
+			font-size: 8px;
+		}
+	}
+
+	// Extra small precipitation tooltips
+	.prec-tooltip {
+		width: 180px !important;
+
+		&__header {
+			padding: 5px 8px;
+			font-size: 9px;
+		}
+
+		&__warning {
+			padding: 4px 6px;
+			font-size: 8px;
+
+			i {
+				font-size: 9px;
+			}
+		}
+
+		&__body {
+			padding: 6px 8px;
+		}
+
+		&__station {
+			padding: 2px 0;
+		}
+
+		&__station-left {
+			gap: 3px;
+		}
+
+		&__dot {
+			width: 5px;
+			height: 5px;
+		}
+
+		&__station-name {
+			font-size: 8px;
+		}
+
+		&__value {
+			font-size: 8px;
+		}
+	}
+}
+
+/* =============================================================================
+   CANVASJS OVERRIDES - CLEAN CHART APPEARANCE
+   ============================================================================= */
+
+.canvasjs-chart-credit {
+	display: none !important;
+}
+
+#precipitationChart a[href*="canvasjs"],
+#waterLevelChart a[href*="canvasjs"] {
+	display: none !important;
+}
+
+// CRITICAL: Make tooltip invisible by default (only show on hover)
+.canvasjs-chart-tooltip,
+div[id*="canvasjs-tooltip"],
+div[id*="canvasjs-react-tooltip"] {
+	box-shadow: none !important;
+	background: transparent !important;
+	border: none !important;
+	padding: 0 !important;
+	margin: 0 !important;
+
+	// Hide by default (CanvasJS will show on hover)
+	pointer-events: none !important;
+}
+
+.canvasjs-chart-container div[style*="position: absolute"] {
+	padding: 0 !important;
+	margin: 0 !important;
+}
+
+[id*="canvasjs"] > div {
+	padding: 0 !important;
+	margin: 0 !important;
+}
+
+/* =============================================================================
+   PRINT STYLES - CLEAN PRINTING
+   ============================================================================= */
+
+@media print {
+	.chart-nav-arrow,
+	.export-btn-inline,
+	.date-picker-inline {
+		display: none !important;
+	}
+
+	.chart-wrapper {
+		box-shadow: none;
+		border: 1px solid #e2e8f0;
+	}
+
+	.chart-alert-banner,
+	.water-alert-banner {
+		animation: none;
+	}
+
+	.chart-canvas {
+		min-height: 300px !important;
+	}
+}
+
+/* =============================================================================
+   ACCESSIBILITY - REDUCED MOTION SUPPORT
+   ============================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+	.chart-canvas,
+	.chart-nav-arrow,
+	.export-btn-inline,
+	.chart-loading__spinner,
+	.water-tooltip,
+	.prec-tooltip {
+		transition: none;
+		animation: none;
+	}
+
+	.chart-nav-arrow[style*="display: flex"] {
+		animation: none;
+	}
+}

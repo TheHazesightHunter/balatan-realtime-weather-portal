@@ -1,0 +1,492 @@
+{% extends 'base.html' %} {% block title %} {{ site.name if site else
+'SiteDetails' }}{% endblock %} {% block content %}
+<section class="py-40">
+	<div class="row row-gap-4">
+		<div class="col-xxl-8">
+			<!-- Current Weather Card -->
+			<div class="weekly-forecast mb-32">
+				<div class="row row-gap-sm-5 row-gap-4">
+					<div class="col-lg-4">
+						<div class="selected-location">
+							<div class="img-block">
+								<h4 class="color-white p-3">
+									{{ site.name if site else 'Weather Station' }}
+								</h4>
+								<img
+									src="{{ url_for('static', filename='media/forecast-icons/night-rainy.png') }}"
+									alt="Weather condition"
+								/>
+								<div
+									class="pt-2 fw-500 h3 color-white align-items-center gap-1"
+								>
+									<p>
+										<span
+											>{{ "%.2f"|format(latest.HourlyRain|float) if latest and
+											latest.HourlyRain is not none else '--' }}</span
+										>
+										<span>mm/hr</span>
+									</p>
+								</div>
+								<p class="color-white">
+									<small>{{ latest.DateTime if latest else '--' }}</small>
+								</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-8">
+						<div class="row weekly-forecast-carousel">
+							{% for row in weather[:6] %}
+							<div class="col-12">
+								<div class="week-day-card">
+									<div class="d-flex align-items-center column-gap-4">
+										<img
+											src="{{ url_for('static', filename='media/forecast-icons/light-rain.png') }}"
+											alt="Weather icon"
+										/>
+										<div>
+											<h4 class="bold-text color-black">
+												{{ "%.2f"|format(row.HourlyRain|float) if row.HourlyRain
+												is not none else '--' }}
+											</h4>
+											<p class="fw-500 light-gray d-flex align-items-center">
+												mm/hr
+											</p>
+										</div>
+									</div>
+									<div>
+										<p class="light-black fw-600">
+											Water Level: {{ "%.1f"|format(row.WaterLevel|float) if
+											row.WaterLevel is not none else '--' }} cm
+										</p>
+										<p class="color-gray fw-500">{{ row.SensorTime }}</p>
+									</div>
+								</div>
+							</div>
+							{% endfor %}
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Weather Details -->
+			<div class="today-highlights">
+				<h5 class="mb-20">Weather Details</h5>
+				<div class="row g-3 g-md-4">
+					<div class="col-6 col-xl-3">
+						<div class="today-highlight-card">
+							<div class="metric-header">
+								<img
+									src="{{ url_for('static', filename='media/icons/wind_speed.svg') }}"
+									alt="Wind Speed"
+									class="metric-icon"
+								/>
+								<div class="metric-label">
+									<h5 class="light-black metric-title">Wind Speed</h5>
+									<span class="h4 metric-value bold-text"
+										>{{ "%.2f"|format(latest.WindSpeed|float) if latest and
+										latest.WindSpeed is not none else '--' }}</span
+									>
+									<span class="fw-500 h6">m/s</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-6 col-xl-3">
+						<div class="today-highlight-card">
+							<div class="metric-header">
+								<img
+									src="{{ url_for('static', filename='media/icons/wind.png') }}"
+									alt="Wind Direction"
+									class="metric-icon"
+								/>
+								<div class="metric-label">
+									<h5 class="light-black metric-title">Wind Direction</h5>
+									<span class="h4 metric-value bold-text"
+										>{{ latest.WindDegree if latest and latest.WindDegree is not
+										none else '--' }}°</span
+									>
+									<span class="fw-500 h6"
+										>{{ latest.WindDirection if latest and latest.WindDirection
+										else '--' }}</span
+									>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-6 col-xl-3">
+						<div class="today-highlight-card">
+							<div class="metric-header">
+								<img
+									src="{{ url_for('static', filename='media/icons/temperature.svg') }}"
+									alt="Temperature"
+									class="metric-icon"
+								/>
+								<div class="metric-label">
+									<h5 class="light-black metric-title">Temperature</h5>
+									<span class="h4 metric-value bold-text"
+										>{{ "%.2f"|format(latest.Temperature|float) if latest and
+										latest.Temperature is not none else '--' }}</span
+									>
+									<span class="fw-500 h6">°C</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-6 col-xl-3">
+						<div class="today-highlight-card">
+							<div class="metric-header">
+								<img
+									src="{{ url_for('static', filename='media/icons/humidity.svg') }}"
+									alt="Humidity"
+									class="metric-icon"
+								/>
+								<div class="metric-label">
+									<h5 class="light-black metric-title">Humidity</h5>
+									<span class="h4 metric-value bold-text"
+										>{{ "%.2f"|format(latest.Humidity|float) if latest and
+										latest.Humidity is not none else '--' }}</span
+									>
+									<span class="h6">%</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Other Stations Sidebar -->
+		<div class="col-xxl-4">
+			<div class="cities-forecast">
+				<h5 class="mb-24">Other Stations</h5>
+				<div class="row row-gap-3">
+					{% for station in sites %} {% if station.id != current_site_id %} {%
+					set station_data = all_stations_latest.get(station.id, {}) if
+					all_stations_latest else {} %}
+					<div class="col-xxl-12 col-sm-6">
+						<a
+							href="{{ url_for('web.site_detail', site_id=station.id) }}"
+							class="cities-forecast-card d-block text-decoration-none"
+						>
+							<div class="station-content">
+								<img
+									src="{{ url_for('static', filename='media/forecast-icons/intense-rain.png') }}"
+									alt="{{ station.name }}"
+									class="station-icon"
+								/>
+								<div class="station-info">
+									<h6 class="light-black">{{ station.name }}</h6>
+									<p class="fw-500 light-gray station-metrics">
+										<span class="n-text"
+											>Water Level: {{
+											"%.1f"|format(station_data.WaterLevel|float) if
+											station_data and station_data.WaterLevel is not none else
+											'0.0' }} cm</span
+										>
+									</p>
+								</div>
+								<div>
+									<h4 class="color-black bold-text station-temp">
+										{{ "%.2f"|format(station_data.HourlyRain|float) if
+										station_data and station_data.HourlyRain is not none else
+										'0.00' }}
+									</h4>
+									<p class="fw-500 n-text">mm/hr</p>
+								</div>
+							</div>
+						</a>
+					</div>
+					{% endif %} {% endfor %}
+					<div class="col-12">
+						<a href="{{ url_for('web.home') }}" class="cus-btn w-100"
+							>See Summary Dashboard <span></span
+						></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- PRECIPITATION CHART -->
+<section>
+	<div class="chart-container">
+		<button
+			type="button"
+			class="chart-nav-arrow chart-nav-arrow--left"
+			id="btn-prev-day"
+			aria-label="View previous day"
+		>
+			<i class="fas fa-chevron-left" aria-hidden="true"></i>
+		</button>
+		<div class="chart-wrapper">
+			<div class="chart-header">
+				<h5 class="chart-title precipitation-title">
+					<i class="fas fa-cloud-rain chart-title__icon" aria-hidden="true"></i>
+					{{ site.name }} - Hourly Precipitation
+				</h5>
+				<div class="chart-controls">
+					<div class="date-picker-inline">
+						<i class="fas fa-calendar-alt" aria-hidden="true"></i>
+						<label for="datePicker" class="sr-only">Select date</label>
+						<span class="date-picker-label" aria-hidden="true"
+							>Select Date:</span
+						>
+						<input
+							type="date"
+							id="datePicker"
+							class="date-picker-inline__input"
+						/>
+					</div>
+					<button
+						type="button"
+						id="btn-export-csv"
+						class="export-btn-inline"
+						aria-label="Export CSV"
+					>
+						<i class="fas fa-download" aria-hidden="true"></i>
+						<span class="export-btn-text">Export CSV</span>
+					</button>
+				</div>
+			</div>
+			<div
+				class="chart-loading hidden"
+				id="chart-loading"
+				role="status"
+				aria-live="polite"
+			>
+				<div class="chart-loading__spinner" aria-hidden="true"></div>
+				<p class="chart-loading__text">Loading precipitation data...</p>
+			</div>
+			<div
+				id="precipitationChart"
+				class="chart-canvas"
+				role="img"
+				aria-label="Precipitation chart"
+			></div>
+			<div class="chart-error hidden" id="chart-error" role="alert">
+				<i
+					class="fas fa-exclamation-triangle chart-error__icon"
+					aria-hidden="true"
+				></i>
+				<h3 class="chart-error__title">Unable to Load Data</h3>
+				<p class="chart-error__message">Error loading precipitation data.</p>
+				<button type="button" class="chart-error__btn" data-action="retry">
+					<i class="fas fa-redo" aria-hidden="true"></i> Retry
+				</button>
+			</div>
+		</div>
+		<button
+			type="button"
+			class="chart-nav-arrow chart-nav-arrow--right"
+			id="btn-next-day"
+			aria-label="View next day"
+		>
+			<i class="fas fa-chevron-right" aria-hidden="true"></i>
+		</button>
+	</div>
+</section>
+
+<!-- WATER LEVEL CHART -->
+<section class="pt-40">
+	<div class="chart-container">
+		<button
+			type="button"
+			class="chart-nav-arrow chart-nav-arrow--left"
+			id="btn-water-prev-day"
+			aria-label="View previous day"
+		>
+			<i class="fas fa-chevron-left" aria-hidden="true"></i>
+		</button>
+		<div class="chart-wrapper">
+			<div class="chart-header">
+				<h5 class="chart-title water-level-title">
+					<i class="fas fa-water chart-title__icon" aria-hidden="true"></i>
+					{{ site.name }} - Hourly Water Level
+				</h5>
+				<div class="chart-controls">
+					<div class="date-picker-inline">
+						<i class="fas fa-calendar-alt" aria-hidden="true"></i>
+						<label for="waterDatePicker" class="sr-only">Select date</label>
+						<span class="date-picker-label" aria-hidden="true"
+							>Select Date:</span
+						>
+						<input
+							type="date"
+							id="waterDatePicker"
+							class="date-picker-inline__input"
+						/>
+					</div>
+					<button
+						type="button"
+						id="btn-export-water-csv"
+						class="export-btn-inline"
+						aria-label="Export CSV"
+					>
+						<i class="fas fa-download" aria-hidden="true"></i>
+						<span class="export-btn-text">Export CSV</span>
+					</button>
+				</div>
+			</div>
+			<div
+				class="chart-loading hidden"
+				id="water-chart-loading"
+				role="status"
+				aria-live="polite"
+			>
+				<div class="chart-loading__spinner" aria-hidden="true"></div>
+				<p class="chart-loading__text">Loading water level data...</p>
+			</div>
+			<div
+				id="waterLevelChart"
+				class="chart-canvas"
+				role="img"
+				aria-label="Water level chart"
+			></div>
+			<div class="chart-error hidden" id="water-chart-error" role="alert">
+				<i
+					class="fas fa-exclamation-triangle chart-error__icon"
+					aria-hidden="true"
+				></i>
+				<h3 class="chart-error__title">Unable to Load Data</h3>
+				<p class="chart-error__message">Error loading water level data.</p>
+				<button type="button" class="chart-error__btn" data-action="retry">
+					<i class="fas fa-redo" aria-hidden="true"></i> Retry
+				</button>
+			</div>
+		</div>
+		<button
+			type="button"
+			class="chart-nav-arrow chart-nav-arrow--right"
+			id="btn-water-next-day"
+			aria-label="View next day"
+		>
+			<i class="fas fa-chevron-right" aria-hidden="true"></i>
+		</button>
+	</div>
+</section>
+
+{% endblock %} {% block extra_js %}
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script src="{{ url_for('static', filename='js/csv-exporter.js') }}"></script>
+<script src="{{ url_for('static', filename='js/precipitation-chart.js') }}"></script>
+<script src="{{ url_for('static', filename='js/water-level-chart.js') }}"></script>
+
+<script>
+	document.addEventListener("DOMContentLoaded", async () => {
+		const stationId = "{{ current_site_id }}";
+		const siteName = "{{ site.name }}";
+		const stationColor = "{{ station_colors.get(current_site_id, '#409ac7') }}";
+
+		console.log("[SITE_DETAIL] Station:", stationId, siteName, stationColor);
+
+		const stationConfig = {
+			[stationId]: {
+				name: siteName,
+				color: stationColor,
+			},
+		};
+
+		const today = new Date().toISOString().split("T")[0];
+		const precipPicker = document.getElementById("datePicker");
+		const waterPicker = document.getElementById("waterDatePicker");
+
+		if (precipPicker) precipPicker.value = today;
+		if (waterPicker) waterPicker.value = today;
+
+		try {
+			const csvExporter = new CSVExporter();
+			let precipChart = null;
+			let waterChart = null;
+
+			if (document.getElementById("precipitationChart")) {
+				precipChart = new PrecipitationChart({
+					chartId: "precipitationChart",
+					apiEndpoint: "/api/precipitation-data",
+					autoLoad: true,
+					stationConfig,
+					onDataLoaded: (data) => {
+						if (precipPicker && data.date) precipPicker.value = data.date;
+					},
+				});
+				await precipChart.init();
+				window.precipChart = precipChart;
+			}
+
+			if (document.getElementById("waterLevelChart")) {
+				waterChart = new WaterLevelChart({
+					chartId: "waterLevelChart",
+					apiEndpoint: "/api/water-level-data",
+					autoLoad: true,
+					stationConfig,
+					onDataLoaded: (data) => {
+						if (waterPicker && data.date) waterPicker.value = data.date;
+					},
+					onThresholdBreach: (alert) => console.warn("[FLOOD]", alert),
+				});
+				await waterChart.init();
+				window.waterChart = waterChart;
+			}
+
+			function syncCharts(newDate) {
+				if (precipPicker) precipPicker.value = newDate;
+				if (waterPicker) waterPicker.value = newDate;
+				precipChart?.loadSpecificDate(newDate);
+				waterChart?.loadSpecificDate(newDate);
+			}
+
+			function navigateDay(days, sourcePicker) {
+				const current = sourcePicker?.value || today;
+				const date = new Date(current);
+				date.setDate(date.getDate() + days);
+				syncCharts(date.toISOString().split("T")[0]);
+			}
+
+			document
+				.getElementById("btn-prev-day")
+				?.addEventListener("click", () => navigateDay(-1, precipPicker));
+			document
+				.getElementById("btn-next-day")
+				?.addEventListener("click", () => navigateDay(1, precipPicker));
+			document
+				.getElementById("btn-water-prev-day")
+				?.addEventListener("click", () => navigateDay(-1, waterPicker));
+			document
+				.getElementById("btn-water-next-day")
+				?.addEventListener("click", () => navigateDay(1, waterPicker));
+
+			precipPicker?.addEventListener("change", (e) => {
+				if (e.target.value) syncCharts(e.target.value);
+			});
+			waterPicker?.addEventListener("change", (e) => {
+				if (e.target.value) syncCharts(e.target.value);
+			});
+
+			document
+				.getElementById("btn-export-csv")
+				?.addEventListener("click", () => {
+					if (precipChart?.chartData)
+						csvExporter.exportPrecipitationData(
+							precipChart.chartData,
+							precipPicker?.value
+						);
+					else alert("No data to export");
+				});
+			document
+				.getElementById("btn-export-water-csv")
+				?.addEventListener("click", () => {
+					if (waterChart?.chartData)
+						csvExporter.exportWaterLevelData(
+							waterChart.chartData,
+							waterPicker?.value
+						);
+					else alert("No data to export");
+				});
+
+			console.log("[SITE_DETAIL] Charts initialized for", siteName);
+		} catch (error) {
+			console.error("[SITE_DETAIL] Failed:", error);
+		}
+	});
+</script>
+{% endblock %}

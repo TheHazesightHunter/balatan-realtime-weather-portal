@@ -1,0 +1,101 @@
+.alert-normal {
+	color: $alert-normal !important;
+	background-color: rgba($alert-normal, 0.1) !important;
+}
+
+.alert-advisory {
+	color: $alert-advisory !important;
+	background-color: rgba($alert-advisory, 0.1) !important;
+}
+
+.alert-alert {
+	color: $alert-alert !important;
+	background-color: rgba($alert-alert, 0.1) !important;
+}
+
+.alert-warning {
+	color: $alert-warning !important;
+	background-color: rgba($alert-warning, 0.1) !important;
+}
+
+.alert-critical {
+	color: $alert-critical !important;
+	background-color: rgba($alert-critical, 0.1) !important;
+}
+
+.alert-muted {
+	color: $light-gray !important;
+	background-color: $lightest-gray !important;
+}
+
+.weather-card__advisory {
+	padding: 12px 16px;
+	border-radius: 8px;
+	background: rgba(255, 255, 255, 0.1);
+	backdrop-filter: blur(4px);
+	border: 1px solid rgba(255, 255, 255, 0.2);
+
+	.weather-card__advisory-content {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+
+		span {
+			font-size: 14px;
+			line-height: 1.4;
+
+			&.alert-normal { color: $alert-normal !important; }
+			&.alert-advisory { color: $alert-advisory !important; }
+			&.alert-alert { color: $alert-alert !important; }
+			&.alert-warning { color: $alert-warning !important; }
+			&.alert-critical { color: $alert-critical !important; }
+		}
+	}
+}
+
+.legend-bar-normal {
+	background: linear-gradient(to right, $alert-normal, rgba($alert-normal, 0.8));
+	color: $white;
+}
+
+.legend-bar-advisory {
+	background: linear-gradient(to right, $alert-advisory, rgba($alert-advisory, 0.8));
+	color: $white;
+}
+
+.legend-bar-alert {
+	background: linear-gradient(to right, $alert-alert, rgba($alert-alert, 0.8));
+	color: $white;
+}
+
+.legend-bar-warning {
+	background: linear-gradient(to right, $alert-warning, rgba($alert-warning, 0.8));
+	color: $white;
+}
+
+.legend-bar-critical {
+	background: linear-gradient(to right, $alert-critical, rgba($alert-critical, 0.8));
+	color: $white;
+}
+
+@media (max-width: $breakpoint-md) {
+	.weather-card__advisory {
+		padding: 10px 12px;
+
+		.weather-card__advisory-content span {
+			font-size: 13px;
+		}
+	}
+}
+
+.text-normal { color: $alert-normal !important; }
+.text-advisory { color: $alert-advisory !important; }
+.text-alert { color: $alert-alert !important; }
+.text-warning { color: $alert-warning !important; }
+.text-critical { color: $alert-critical !important; }
+
+.bg-normal { background-color: rgba($alert-normal, 0.1) !important; }
+.bg-advisory { background-color: rgba($alert-advisory, 0.1) !important; }
+.bg-alert { background-color: rgba($alert-alert, 0.1) !important; }
+.bg-warning { background-color: rgba($alert-warning, 0.1) !important; }
+.bg-critical { background-color: rgba($alert-critical, 0.1) !important; }

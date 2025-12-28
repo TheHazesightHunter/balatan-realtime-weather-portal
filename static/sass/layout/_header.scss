@@ -1,0 +1,315 @@
+/* ------------------------------------------------------------- *
+ * Header CSS Start
+/* ------------------------------------------------------------- */
+
+//  Navigation
+.main-menu {
+	width: 100%;
+	z-index: 9999;
+	display: grid;
+	background-color: $white;
+	align-content: center;
+	padding: clamp(16px, 1.25vw, 30px);
+	border-radius: 0 0 clamp(16px, 1.25vw, 30px) clamp(16px, 1.25vw, 30px);
+	@include media-query(1199px) {
+		padding: clamp(12px, 1.25vw, 30px) clamp(16px, 1.25vw, 30px);
+	}
+	.main-menu__block {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 24px;
+	}
+	.main-menu__logo {
+		.logo {
+			text-align: center;
+			max-width: 64px;
+			@include media-query(492px) {
+				max-width: 58px;
+			}
+		}
+	}
+	.location-block {
+		display: flex;
+		align-items: center;
+		svg {
+			width: clamp(20px, 1.25vw, 30px);
+			height: clamp(20px, 1.25vw, 30px);
+		}
+	}
+	.search-field {
+		width: 35.417vw;
+	}
+	.main-menu__right {
+		display: flex;
+		align-items: center;
+		gap: clamp(16px, 1.25vw, 48px);
+		.icon-btn {
+			display: flex;
+			font-size: clamp(16px, 1.25vw, 24px);
+			align-items: center;
+			justify-content: center;
+			transition: $transition;
+			svg {
+				width: 24px;
+				height: 24px;
+				path {
+					fill: $black;
+					transition: $transition;
+				}
+			}
+			&:hover {
+				svg {
+					path {
+						fill: $accent;
+						transition: $transition;
+					}
+				}
+			}
+		}
+	}
+	.main-menu__nav {
+		display: none;
+	}
+}
+
+.sidebar-nav__toggler {
+	font-size: 24px;
+	font-weight: 300;
+	color: $black;
+	cursor: pointer;
+	transition: $transition;
+	@include media-query-min(1200px) {
+		display: none;
+	}
+	&:hover {
+		color: $accent;
+	}
+}
+
+/*--------------------------------------------------------------
+# Sidebar Nav
+--------------------------------------------------------------*/
+.sidebar-nav__wrapper {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: clamp(130px, 7.917vw, 200px);
+	height: 100vh;
+	z-index: 999;
+	transform-origin: left center;
+
+	// Desktop: visible by default
+	visibility: visible;
+	opacity: 1;
+	transform: translateX(0%);
+	transition: transform 500ms ease, visibility 500ms ease, opacity 500ms ease;
+
+	// Mobile: hidden by default
+	@include media-query(1199px) {
+		width: 100%;
+		visibility: hidden;
+		opacity: 0;
+		transform: translateX(-100%);
+	}
+
+	.container {
+		padding-left: 0;
+		padding-right: 0;
+	}
+
+	.sidebar-nav__overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: $light-black;
+		opacity: 0;
+		visibility: hidden;
+		cursor: pointer;
+		transition: opacity 300ms ease, visibility 300ms ease;
+	}
+
+	.sidebar-nav__content {
+		width: clamp(130px, 7.917vw, 200px);
+		background-color: $white;
+		z-index: 10;
+		position: relative;
+		height: 100%;
+		overflow-y: auto;
+		display: grid;
+		overflow-x: hidden;
+		align-items: center;
+		padding: clamp(18px, 1.25vw, 48px) clamp(12px, 1vw, 48px);
+		border-radius: 0 clamp(24px, 2.5vw, 70px) clamp(24px, 2.5vw, 70px) 0;
+		opacity: 1;
+		visibility: visible;
+		transform: translateX(0);
+		transition: transform 300ms ease, opacity 300ms ease, visibility 300ms ease;
+
+		@include media-query(1199px) {
+			width: 280px;
+			max-width: 80vw;
+		}
+
+		.main-menu__nav {
+			display: block;
+			padding: 0;
+		}
+
+		.logo-box {
+			position: absolute;
+			top: clamp(18px, 1.25vw, 48px);
+			left: 50%;
+			transform: translateX(-50%);
+		}
+
+		.main-menu__list,
+		.main-menu__list ul {
+			margin: auto 0;
+			padding: 0;
+			list-style-type: none;
+		}
+
+		.main-menu__list {
+			display: flex;
+			gap: clamp(24px, 2.5vw, 90px);
+			flex-direction: column;
+
+			ul {
+				display: none;
+			}
+
+			li {
+				a {
+					display: flex;
+					gap: clamp(6px, 0.63vw, 16px);
+					color: $dark-gray;
+					font-size: clamp(14px, 0.833vw, 22px);
+					font-family: $font-primary;
+					text-transform: capitalize;
+					font-weight: 600;
+					letter-spacing: 0.48px;
+					align-items: center;
+					transition: $transition;
+
+					svg {
+						width: clamp(18px, 1.25vw, 32px);
+						height: clamp(18px, 1.25vw, 32px);
+						path {
+							transition: $transition;
+							fill: $dark-gray;
+						}
+					}
+
+					&.expanded {
+						color: $dark-gray;
+					}
+
+					button {
+						background: transparent;
+						border: none;
+						outline: none;
+						color: $dark-gray;
+						margin-left: auto;
+						transform: rotate(-90deg);
+						transition: transform 500ms ease;
+
+						&.expanded {
+							transform: rotate(0deg);
+						}
+					}
+
+					&:hover,
+					&.active {
+						color: $accent;
+						svg {
+							path {
+								fill: $accent;
+							}
+						}
+					}
+				}
+
+				.sub-menu {
+					margin-top: 12px;
+
+					li {
+						padding: 6px 0 12px 4px;
+
+						&:last-child {
+							padding-bottom: 0;
+						}
+
+						a {
+							font-size: 14px;
+
+							&.active {
+								color: $accent;
+								font-weight: 700;
+								position: relative;
+								padding-left: 12px;
+
+								&::before {
+									content: "";
+									position: absolute;
+									left: 0;
+									top: 50%;
+									transform: translateY(-50%);
+									width: 3px;
+									height: 80%;
+									background-color: $accent;
+									border-radius: 2px;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		.sidebar-nav__close {
+			position: absolute;
+			top: 20px;
+			right: 15px;
+			font-size: 18px;
+			color: $dark-gray;
+			cursor: pointer;
+			display: none;
+
+			@include media-query(1199px) {
+				display: block;
+			}
+		}
+	}
+
+	.sidebar-nav__container .main-menu__logo,
+	.sidebar-nav__container .main-menu__right {
+		display: none;
+	}
+
+	// EXPANDED STATE - JS adds .expanded to .sidebar-nav__wrapper
+	&.expanded {
+		visibility: visible;
+		opacity: 1;
+		transform: translateX(0%);
+
+		.sidebar-nav__overlay {
+			opacity: 0.5;
+			visibility: visible;
+		}
+
+		.sidebar-nav__content {
+			transform: translateX(0);
+			opacity: 1;
+			visibility: visible;
+		}
+	}
+}
+
+// Body lock when menu is open
+body.locked {
+	overflow: hidden;
+}

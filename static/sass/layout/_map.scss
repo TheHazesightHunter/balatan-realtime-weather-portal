@@ -1,0 +1,282 @@
+// =============================================================================
+// INTERACTIVE MAP COMPONENT
+// Leaflet-based station map with markers, popups, and legend
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// Variables
+// -----------------------------------------------------------------------------
+$map-border-color: #e5e7eb;
+$map-bg-color: #f9fafb;
+$map-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+$legend-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+
+// Alert level colors (consistent with _alerts.scss)
+$alert-critical: #dc2626;
+$alert-warning: #f59e0b;
+$alert-alert: #eab308;
+$alert-advisory: #409ac7;
+$alert-normal: #10b981;
+
+// Popup colors
+$popup-bg: white;
+$popup-border: #e2e8f0;
+$popup-text-dark: #1a202c;
+$popup-text-light: #64748b;
+
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 1024px;
+
+// -----------------------------------------------------------------------------
+// Map Container
+// -----------------------------------------------------------------------------
+.map-container {
+	background: $map-bg-color;
+	border-radius: 10px;
+	overflow: hidden;
+	box-shadow: $map-shadow;
+	position: relative;
+	height: 100%;
+	min-height: 300px;
+
+	@media (min-width: $breakpoint-tablet) {
+		min-height: 320px;
+	}
+
+	@media (min-width: $breakpoint-desktop) {
+		min-height: 340px;
+	}
+}
+
+#station-map {
+	width: 100%;
+	height: 100%;
+	min-height: inherit;
+}
+
+.interactive-map {
+	height: 100%;
+	width: 100%;
+	border-radius: 8px;
+	position: relative;
+	background: $map-bg-color;
+}
+
+.leaflet-tile-container {
+	filter: hue-rotate(190deg) saturate(115%) brightness(97%);
+}
+
+// -----------------------------------------------------------------------------
+// Map Loading Overlay
+// -----------------------------------------------------------------------------
+.map-loading {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 1000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	&.hidden {
+		display: none;
+	}
+
+	.spinner-border {
+		width: 3rem;
+		height: 3rem;
+		border-width: 0.3em;
+	}
+}
+
+// -----------------------------------------------------------------------------
+// Map Legend
+// -----------------------------------------------------------------------------
+
+.legend-item {
+	display: flex;
+	align-items: center;
+	margin-bottom: 5px;
+}
+
+.legend-color {
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	margin-right: 8px;
+	border: 2px solid white;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	flex-shrink: 0;
+}
+
+/* Horizontal Bar Legend - Bottom Right */
+
+.map-legend-bar {
+	position: absolute;
+	bottom: 20px;
+	right: 10px; 
+	display: flex;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25); 
+	overflow: hidden; 
+	z-index: 1000;
+	font-size: 10px;
+
+	@media (min-width: 1024px) {
+		font-size: 11px;
+	}
+}
+
+.legend-bar-item {
+	padding: 1px 8px;
+	color: white;
+	text-align: center;
+	min-width: 60px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+	font-weight: 600;
+
+	@media (min-width: 1024px) {
+		padding: 1px 8px; /* Slightly larger on desktop */
+		min-width: 70px;
+	}
+}
+
+.legend-bar-normal {
+	background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.legend-bar-advisory {
+	background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.legend-bar-alert {
+	background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+}
+
+.legend-bar-warning {
+	background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+}
+
+.legend-bar-critical {
+	background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+	.map-legend-bar {
+		font-size: 9px;
+		bottom: 10px;
+		right: 10px;
+	}
+
+	.legend-bar-item {
+		padding: 5px 10px;
+		min-width: 50px;
+	}
+}
+// -----------------------------------------------------------------------------
+// Station Popup Styles
+// -----------------------------------------------------------------------------
+.station-popup {
+	min-width: 200px;
+
+	h4 {
+		margin: 0 0 10px 0;
+		color: $popup-text-dark;
+		font-size: 14px;
+		font-weight: 600;
+	}
+}
+
+.popup-metrics {
+	display: grid;
+	gap: 8px;
+	font-size: 12px;
+}
+
+.popup-metric {
+	display: flex;
+	justify-content: space-between;
+	padding: 4px 0;
+	border-bottom: 1px solid $popup-border;
+
+	&:last-child {
+		border-bottom: none;
+	}
+}
+
+.popup-metric-label {
+	color: $popup-text-light;
+}
+
+.popup-metric-value {
+	font-weight: 600;
+	color: $popup-text-dark;
+}
+
+// -----------------------------------------------------------------------------
+// Popup Alert Status Badges
+// -----------------------------------------------------------------------------
+.popup-alert {
+	margin-top: 10px;
+	padding: 6px;
+	border-radius: 4px;
+	text-align: center;
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+}
+
+.popup-alert-critical {
+	background: #fee2e2;
+	color: $alert-critical;
+	border: 1px solid #fca5a5;
+}
+
+.popup-alert-warning {
+	background: #fef3c7;
+	color: #d97706;
+	border: 1px solid #fcd34d;
+}
+
+.popup-alert-advisory {
+	background: #dbeafe;
+	color: #2563eb;
+	border: 1px solid #93c5fd;
+}
+
+.popup-alert-alert {
+	background: #fef3c7;
+	color: #92400e;
+	border: 1px solid #fde047;
+}
+
+.popup-alert-normal {
+	background: #d1fae5;
+	color: #059669;
+	border: 1px solid #86efac;
+}
+
+// -----------------------------------------------------------------------------
+// Loading Overlay
+// -----------------------------------------------------------------------------
+.map-loading {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(255, 255, 255, 0.9);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+	border-radius: 8px;
+
+	&.hidden {
+		display: none;
+	}
+}
